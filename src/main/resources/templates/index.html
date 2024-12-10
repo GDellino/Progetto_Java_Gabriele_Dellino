@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="eng" xmlns:th="http://www.thymeleaf.org">
   <head th:fragment="head">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,8 +16,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="navbar-item">
-                        <a class="navbar-link" href="">Crea Articolo</a>
+                    <li sec:authorize="isAuthenticated" class="navbar-item">
+                        <a class="navbar-link" href="/article/create">Crea Articolo</a>
                     </li>
                     <li class="navbar-item">
                         <a class="navbar-link" href="">Link</a>
@@ -25,13 +25,13 @@
                     <li class="navbar-item dropdown">
                         <a class="navbar-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Acceso</a>
                         <ul class="dropdown-menu" aria-label="navbarDropdown">
-                            <li><a href="" class="dropdown-item" aria-current="page">Register</a></li>
-                            <li><a href="" class="dropdown-item" aria-current="page">Login</a></li>
-                            <li><a href="" class="dropdown-item" aria-current="page">Logout</a></li>
+                            <li sec:authorize="isAnonymous"><a href="" class="dropdown-item" aria-current="page"th:href="{@/register}">Register</a></li>
+                            <li sec:authorize="isAnonymous"><a href="" class="dropdown-item" aria-current="page" th:href="@{/login}">Login</a></li>
+                            <li sec:authorize="isAuthenticated"><a href="" class="dropdown-item" aria-current="page" th:href="@{/logout}">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
-                <div>Benvenuto</div>
+                <div sec:authorize="isAuthenticated" th:text="'Benvenuto:' + ${#authentication.principal.fullname} + ' - ' + ${#authentication.principal.authorities[0].authority.replace('ROLE_','')}">Benvenuto</div>
             </div>
         </div>
         <form class="d-flex">

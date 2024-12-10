@@ -11,6 +11,10 @@
             </div>
         </div>
 
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${successMassage}"></p>
+        </div>
+
     <div class="container-fluid">
         <div class="row ms-5 vh-100 align-items-center">
             <div class="col-10">
