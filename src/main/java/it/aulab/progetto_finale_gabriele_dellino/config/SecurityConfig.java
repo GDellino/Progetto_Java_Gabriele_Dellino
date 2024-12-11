@@ -18,44 +18,45 @@ import it.aulab.progetto_finale_gabriele_dellino.services.CustomUserDetailsServi
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-        
-        @Autowired
-        private CustomUserDetailsService customUserDetailsService;
-    
-        @Autowired
-        private PasswordEncoder passwordEncoder;
-    
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-            http.
-            csrf(csrf->csrf.disable())
-            .authorizeHttpRequests((authorize)->
-            authorize.requestMatchers("/register/**").permitAll()
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests((authorize) -> authorize.requestMatchers("/register/**").permitAll()
             .requestMatchers("/register").permitAll()
-            .anyRequest().authenticated())
-            .formLogin(form->
-            form.loginPage("/login")
+            .anyRequest().authenticated()
+        ).formLogin(form -> form.loginPage("/login")
             .loginProcessingUrl("/login")
             .defaultSuccessUrl("/")
-            .permitAll()).logout(logout->logout
+            .permitAll()
+        ).logout(logout -> logout
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-            .permitAll())
-            .exceptionHandling(exception->exception.accessDeniedPage("/error/403"))
-            .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            .permitAll()
+        ).exceptionHandling(exception -> exception.accessDeniedPage("/error/403"))
+            .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             .maximumSessions(1)
-            .expiredUrl("/login?session-expire=true")
+            .expiredUrl("/login?session-expired=true")
             );
-            return http.build();
-        }
-    
-        @Autowired
-        public void ConfigureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-            auth.userDetailsService(customUserDetailsService)
-            .passwordEncoder(passwordEncoder);
-        }
+        return http.build();
+    }
 
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
-            return authenticationConfiguration.getAuthenticationManager();
-        }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 }

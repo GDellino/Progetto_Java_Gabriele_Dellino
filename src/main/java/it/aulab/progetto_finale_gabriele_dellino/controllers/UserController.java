@@ -45,16 +45,17 @@ public class UserController {
                                 Model model,
                                 RedirectAttributes redirectAttributes,
                                 HttpServletRequest request,HttpServletResponse response ){
-                                    User existingUser= userService.findUserByEmail(userDto.getEmail());
-                                    if (existingUser!=null && existingUser.getEmail()!=null&& !existingUser.getEmail().isEmpty()){
-                                        result.rejectValue("email",null,"there is already an account registered with the same email");
-                                    }
-                                    if (result.hasErrors()) {
-                                        model.addAttribute("user",userDto);
-                                        return"auth/register";
-                                    }
-                                    userService.saveUser(userDto,redirectAttributes,request,response);
-                                    redirectAttributes.addFlashAttribute("successMessage","Registrazione avvenuta!");
-                                    return"redirect:/";
-                                }
+                                    
+        User existingUser= userService.findUserByEmail(userDto.getEmail());
+        if (existingUser!=null && existingUser.getEmail()!=null&& !existingUser.getEmail().isEmpty()){
+            result.rejectValue("email",null,"there is already an account registered with the same email");
+        }
+        if (result.hasErrors()) {
+            model.addAttribute("user",userDto);
+            return"auth/register";
+        }
+        userService.saveUser(userDto,redirectAttributes,request,response);
+        redirectAttributes.addFlashAttribute("successMessage","Registrazione avvenuta!");
+        return"redirect:/";
+    }
 }
