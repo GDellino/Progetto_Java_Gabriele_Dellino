@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +23,7 @@ import it.aulab.progetto_finale_gabriele_dellino.repositories.ImageRepository;
 import it.aulab.progetto_finale_gabriele_dellino.utils.StringManipulation;
 import jakarta.transaction.Transactional;
 
+@Service
 public class ImageServiceImpl implements ImageService{
 
     @Autowired
