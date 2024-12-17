@@ -12,27 +12,26 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "cotegories")
-public class Category{
-
+@Table(name = "categories")
+public class Category {
+    
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable=false, length=100)
-    @NotEmpty(message="Il nome non deve essere vuoto")
-    @Size(max=50)
+    
+    @Column(nullable = false, length = 100)
+    @NotEmpty(message = "Il nome non deve essere vuoto")
+    @Size(max = 50)
     private String name;
 
-    @OneToMany(mappedBy="category")
+    @OneToMany(mappedBy = "category")
     private List<Article> articles = new ArrayList<Article>();
 }

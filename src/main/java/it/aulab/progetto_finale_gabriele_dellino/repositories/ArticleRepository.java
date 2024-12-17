@@ -13,15 +13,15 @@ import it.aulab.progetto_finale_gabriele_dellino.models.User;
 
 public interface ArticleRepository extends ListCrudRepository<Article, Long>{
     List<Article> findByCategory(Category category);
-    List<Article> findByUser(User user);
+    List<Article> findByUser( User user);
     List<Article> findByIsAcceptedTrue();
     List<Article> findByIsAcceptedFalse();
-    List<Article> findByIsAcceptedIsNull();
+    List<Article> findByIsAcceptedNull();
 
-    @Query("SELECT a FROM Article a WHERE " +
-        "LOWER(a.title) LIKE LOWER(CONCAT('%',:searchTerm,'%')) OR " +
-        "LOWER(a.subtitle) LIKE LOWER(CONCAT('%',:searchTerm,'%')) OR " +
-        "LOWER(a.user.username) LIKE LOWER(CONCAT('%',:searchTerm,'%')) OR " +
-        "LOWER(a.category.name) LIKE LOWER(CONCAT('%',:searchTerm,'%'))")
+    @Query("SELECT a FROM Article a WHERE "+
+        "LOWER (a.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "+
+        "LOWER (a.subtitle) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "+
+        "LOWER (a.user.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "+
+        "LOWER (a.category.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) ")
     List<Article> search(@Param("searchTerm") String searchTerm);
 }

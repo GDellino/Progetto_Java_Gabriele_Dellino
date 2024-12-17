@@ -11,23 +11,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class NotificationInterceptor implements HandlerInterceptor{
-
+public class NotificationInterceptor implements HandlerInterceptor {
     @Autowired
     CareerRequestRepository careerRequestRepository;
 
     @Autowired
-    ArticleRepository articleRepository;
+    private ArticleRepository articleRepository;
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception{
-        if(modelAndView != null && request.isUserInRole("ROLE_ADMIN")){
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+            ModelAndView modelAndView) throws Exception {
+        if (modelAndView != null && request.isUserInRole("ROLE_ADMIN")) {
             int careerCount = careerRequestRepository.findByIsCheckedFalse().size();
             modelAndView.addObject("careerRequest", careerCount);
         }
 
-        if(modelAndView != null && request.isUserInRole("ROLE_REVISOR")){
-            int revisedCount = articleRepository.findByIsAcceptedIsNull().size();
+        if (modelAndView != null && request.isUserInRole("ROLE_REVISOR")) {
+            int revisedCount = articleRepository.findByIsAcceptedNull().size();
             modelAndView.addObject("articlesToBeRevised", revisedCount);
         }
     }

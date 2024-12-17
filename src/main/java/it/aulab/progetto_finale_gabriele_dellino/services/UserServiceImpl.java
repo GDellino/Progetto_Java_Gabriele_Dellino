@@ -23,37 +23,32 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
-    private RoleRepository roleRepository;
-
+    private RoleRepository  roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
-    @Override
-    public User findUserByEmail(String email){
+     @Override
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
+
     @Override
-    public void saveUser(UserDto userDto, RedirectAttributes redirectAttributes, HttpServletRequest request,
-            HttpServletResponse response) {
+    public void saveUser(UserDto userDto, RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response){
         User user = new User();
-        user.setUsername(userDto.getFirsName() + " " + userDto.getLastName());
+        user.setUsername(userDto.getFirstName() + " " + userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
@@ -62,10 +57,11 @@ public class UserServiceImpl implements UserService{
 
         userRepository.save(user);
 
-        authenticateUserAndSession(user,userDto,request);
+        authenticateUserAndSetSession(user, userDto, request);
     }
 
-    public void authenticateUserAndSession(User user, UserDto userDto, HttpServletRequest request){
+    public void authenticateUserAndSetSession(User user, UserDto userDto, HttpServletRequest request) {
+
         try {
             CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
 
@@ -77,13 +73,16 @@ public class UserServiceImpl implements UserService{
 
             HttpSession session = request.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
         } catch (AuthenticationException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public User find(Long id){
+    public User find(Long id) {
         return userRepository.findById(id).get();
     }
+
+
 }

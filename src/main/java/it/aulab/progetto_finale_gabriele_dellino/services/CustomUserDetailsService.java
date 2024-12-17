@@ -15,34 +15,33 @@ import it.aulab.progetto_finale_gabriele_dellino.models.Role;
 import it.aulab.progetto_finale_gabriele_dellino.models.User;
 import it.aulab.progetto_finale_gabriele_dellino.repositories.UserRepository;
 
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    
+
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
-        if (user==null) {
+        if (user == null) {
             throw new UsernameNotFoundException("invalid credentials");
         }
         return new CustomUserDetails(
-            user.getId(),
-            user.getUsername(),
-            user.getEmail(),
-            user.getPassword(),
-            mapRolesToAuthorities(user.getRoles())
-        );
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                mapRolesToAuthorities(user.getRoles()));
     }
-    public Collection<?extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         Collection<? extends GrantedAuthority> mapRoles = null;
-        if(roles.size() != 0){
+        if (roles.size() != 0) {
             mapRoles = roles.stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName()))
-            .collect(Collectors.toList());
-        }else{
+                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+                    .collect(Collectors.toList());
+        } else {
             mapRoles = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return mapRoles;

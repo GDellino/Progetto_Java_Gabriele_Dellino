@@ -24,7 +24,7 @@ import it.aulab.progetto_finale_gabriele_dellino.utils.StringManipulation;
 import jakarta.transaction.Transactional;
 
 @Service
-public class ImageServiceImpl implements ImageService{
+public class ImageServiceImpl implements ImageService {
 
     @Autowired
     private ImageRepository imageRepository;
@@ -43,16 +43,14 @@ public class ImageServiceImpl implements ImageService{
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Override
     public void saveImageOnDB(String url, Article article) {
         url = url.replace(supabaseBucket, supabaseImage);
         imageRepository.save(Image.builder().path(url).article(article).build());
     }
 
     @Async
-    @Override
     public CompletableFuture<String> saveImageOnCloud(MultipartFile file) throws Exception {
-        if(!file.isEmpty()){
+        if (!file.isEmpty()) {
             try {
                 String nameFile = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
@@ -60,48 +58,45 @@ public class ImageServiceImpl implements ImageService{
 
                 String url = supabaseUrl + supabaseBucket + nameFile;
 
-                MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
+                MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-                body.add("file",file.getBytes());
+                body.add("file", file.getBytes());
 
                 HttpHeaders headers = new HttpHeaders();
-                headers.set("Content-Type","image/"+extension);
-                headers.add("Authorization", "Bearer "+supabaseKey);
+                headers.set("Content-type", "image/" + extension);
+                headers.set("Authorization", "bearer " + supabaseKey);
 
                 HttpEntity<byte[]> requestEntity = new HttpEntity<>(file.getBytes(), headers);
 
-                restTemplate.exchange(url,HttpMethod.POST, requestEntity,String.class);
+                restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
                 return CompletableFuture.completedFuture(url);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-            throw new IllegalArgumentException("FIle is empty");
-        }
 
+        } else {
+            throw new IllegalArgumentException("File is empty");
+        }
         return CompletableFuture.failedFuture(null);
     }
 
-    @Override
     @Async
     @Transactional
     public void deleteImage(String imagePath) throws IOException {
-        String url = imagePath.replace(supabaseImage,supabaseBucket);
+        String url = imagePath.replace(supabaseImage, supabaseBucket);
 
         imageRepository.deleteByPath(imagePath);
 
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer "+ supabaseKey);
+        headers.set("Authorization", "Bearer " + supabaseKey);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, entity,String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
 
         System.out.println(response.getBody());
     }
-
 }

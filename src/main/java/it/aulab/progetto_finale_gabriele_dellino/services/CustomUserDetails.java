@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails{
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-
+    
     @Override
     public boolean isAccountNonExpired(){
         return true;

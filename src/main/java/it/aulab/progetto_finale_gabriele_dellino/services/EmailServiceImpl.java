@@ -9,17 +9,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceImpl implements EmailService{
 
-    @Autowired
-    private JavaMailSender mailSender;
 
-    @Override
+    @Autowired
+    private JavaMailSender emailSender;
+    
     @Async
-    public void sendSimpleEmail(String to,String subject,String text){
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("aulabpost@administration.com");
+    public void sendSimpleEmail(String to, String subject, String text) {
+        SimpleMailMessage message= new SimpleMailMessage();
+        message.setFrom("aulabpost@admin.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        mailSender.send(message);
+        emailSender.send(message);
     }
+
 }

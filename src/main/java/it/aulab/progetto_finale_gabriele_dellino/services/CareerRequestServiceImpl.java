@@ -14,13 +14,13 @@ import it.aulab.progetto_finale_gabriele_dellino.repositories.RoleRepository;
 import it.aulab.progetto_finale_gabriele_dellino.repositories.UserRepository;
 
 @Service
-public class CareerRequestServiceImpl implements CareerRequestService{
+public class CareerRequestServiceImpl implements CareerRequestService {
 
     @Autowired
     private CareerRequestRepository careerRequestRepository;
 
     @Autowired
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
 
     @Autowired
     private UserRepository userRepository;
@@ -28,19 +28,16 @@ public class CareerRequestServiceImpl implements CareerRequestService{
     @Autowired
     private RoleRepository roleRepository;
 
-
-    @Transactional
     @Override
-    public boolean isRoleAlreadyAssigned(User user, CareerRequest carrerRequest) {
+    public boolean isRoleAlreadyAssigned(User user, CareerRequest careerRequest) {
         List<Long> allUserIds = careerRequestRepository.findAllUserIds();
 
-        if(!allUserIds.contains(user.getId())){
+        if (!allUserIds.contains(user.getId())) {
             return false;
         }
-
         List<Long> request = careerRequestRepository.findByUserId(user.getId());
 
-        return request.stream().anyMatch(roleId -> roleId.equals(carrerRequest.getRole().getId()));
+        return request.stream().anyMatch(roleId -> roleId.equals(careerRequest.getRole().getId()));
     }
 
     @Override
@@ -48,27 +45,30 @@ public class CareerRequestServiceImpl implements CareerRequestService{
         careerRequest.setUser(user);
         careerRequest.setIsChecked(false);
         careerRequestRepository.save(careerRequest);
-
-        emailService.sendSimpleEmail("adminAulabpost@admin.com","Richiesta per ruolo: "+ careerRequest.getRole().getName(),"C'è una nuova richiesta di collaborazione da parte di "+user.getUsername());
+        emailService.sendSimpleEmail("adminAulabpost@admin.com",
+                "Richiesta di ruolo:" + " " + careerRequest.getRole().getName(),
+                "C'è una nuova richiesta di collaborazione da parte di " + user.getUsername());
     }
 
     @Override
-    public void careerAccepted(Long requestId) {
+    public void careerAccept(Long requestId) {
+
         CareerRequest request = careerRequestRepository.findById(requestId).get();
 
         User user = request.getUser();
         Role role = request.getRole();
 
-        List<Role> roleUser = user.getRoles();
+        List<Role> rolesUser = user.getRoles();
         Role newRole = roleRepository.findByName(role.getName());
-        roleUser.add(newRole);
+        rolesUser.add(newRole);
 
-        user.setRoles(roleUser);
+        user.setRoles(rolesUser);
         userRepository.save(user);
         request.setIsChecked(true);
         careerRequestRepository.save(request);
 
-        emailService.sendSimpleEmail(user.getEmail(), "Ruolo abilitato", "Ciao, la tua richiesta di collaborazione è stata accettata dalla nostra amministrazione");
+        emailService.sendSimpleEmail(user.getEmail(), "Ruolo abilitato",
+                "Ciao, la tua richiesta di collaborazione è stata accettata dalla nostra amministrazione");
     }
 
     @Override
