@@ -32,7 +32,7 @@ public class SecurityConfig {
             authorize.requestMatchers("/register/**").permitAll()
             .requestMatchers("/admin/dashboard", "/category/create", "/category/update/{id}", "/category/delete/{id}", "/category/edit/{id}").hasRole("ADMIN")
             .requestMatchers("/revisor/dashboard", "/accept", "/revisor/detail/{id}").hasRole("REVISOR")
-            .requestMatchers("/writer/dashboard","/article/create","/article/edit/{id}","/article/update/{id}","articles/delete/{id}").hasRole("WRITER")
+            .requestMatchers("/writer/dashboard","/article/create","/article/edit/{id}","/article/update/{id}","/articles/delete/{id}").hasRole("WRITER")
             .requestMatchers("/register", "/" , "/articles", "/images/**", "/articles/detail/**","/categories/search/{id}","/search/{id}", "/articles/search").permitAll()
             .anyRequest().authenticated()
         ).formLogin(form ->
