@@ -88,15 +88,65 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long>{
     }
 
     @Override
-    public ArticleDto update(Long key, Article model, MultipartFile file) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public ArticleDto update(Long key, Article updateArticle, MultipartFile file) {
+        String url="";
+
+        if(articleRepository.existsById(key)){
+            updateArticle.setId(key);
+            Article article = articleRepository.findById(key).get();
+            updateArticle.setUser(article.getUser());
+
+            if(!file.isEmpty()){
+                try {
+                    try {
+                        CompletableFuture<String> futureUrl = imageService.saveImageOnCloud(file);
+                        url = futureUrl.get();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
+                    imageService.saveImageOnDB(url, updateArticle);
+    
+                    updateArticle.setIsAccepted(null);
+                    return modelMapper.map(articleRepository.save(updateArticle), ArticleDto.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if(article.getImage()==null){
+                updateArticle.setIsAccepted(article.getIsAccepted());
+            }else{
+                updateArticle.setImage(article.getImage());
+
+                if(updateArticle.equals(article) == false){
+                    updateArticle.setIsAccepted(article.getIsAccepted());
+                }
+
+                return modelMapper.map(articleRepository.save(updateArticle), ArticleDto.class);
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return null;
     }
 
     @Override
     public void delete(Long key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        if(articleRepository.existsById(key)){
+
+            Article article = articleRepository.findById(key).get();
+
+            try {
+                String path = article.getImage().getPath();
+                article.getImage().setArticle(null);
+                imageService.deleteImage(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            articleRepository.deleteById(key);
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public List<ArticleDto> searchByCategory(Category category){

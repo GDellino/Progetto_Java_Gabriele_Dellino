@@ -22,11 +22,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li sec:authorize="isAuthenticated" class="navbar-item">
+                    <li sec:authorize="isAuthenticated && hasRole('ROLE_WRITER')" class="navbar-item">
                         <a class="navbar-link" href="/article/create">Crea Articolo</a>
                     </li>
                     <li class="navbar-item">
-                        <a class="navbar-link" href="/articles">Tutti gli articoli</a>
+                        <a class="navbar-link" href="/articles">Tutti gli articoli </a>
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                         <div class="d-flex">
@@ -46,8 +46,11 @@
                             </div>
                         </div>
                     </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_WRITER')">
+                        <a class="nav-link" href="/writer/dashboard">Dashboard writer</a>
+                    </li>
                     <li class="navbar-item dropdown">
-                        <a class="navbar-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Acceso</a>
+                        <a class="navbar-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Accesso</a>
                         <ul class="dropdown-menu" aria-label="navbarDropdown">
                             <li sec:authorize="isAnonymous"><a href="" class="dropdown-item" aria-current="page"th:href="@{/register}">Register</a></li>
                             <li sec:authorize="isAnonymous"><a href="" class="dropdown-item" aria-current="page" th:href="@{/login}">Login</a></li>
