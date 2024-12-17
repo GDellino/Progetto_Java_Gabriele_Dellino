@@ -28,13 +28,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests((authorize) -> authorize.requestMatchers("/register/**").permitAll()
-            .requestMatchers("/admin/dashboard","/categories/create","/categories/edit{id}","/categories/update/{id}","/categories/delete/{id}").hasRole("ADMIN")
-            .requestMatchers("/revisor/dashboard", "revisor/detail/{id}", "/accept").hasRole("REVISOR")
-            .requestMatchers("/writer/dashboard","/articles/create","/articles/edit/{id}","/articles/update/{id}","/articles/delete/{id}").hasRole("WRITER")
-            .requestMatchers("/register","/","/articles","/images/**","/articles/detail/**","/categories/search/{id}","/search/{id}","/articles/search").permitAll()
+            .authorizeHttpRequests((authorize) ->
+            authorize.requestMatchers("/register/**").permitAll()
+            .requestMatchers("/admin/dashboard", "/category/create", "/category/update/{id}", "/category/delete/{id}", "/category/edit/{id}").hasRole("ADMIN")
+            .requestMatchers("/revisor/dashboard", "/accept", "/revisor/detail/{id}").hasRole("REVISOR")
+            .requestMatchers("/writer/dashboard","/article/create","/article/edit/{id}","/article/update/{id}","articles/delete/{id}").hasRole("WRITER")
+            .requestMatchers("/register", "/" , "/articles", "/images/**", "/articles/detail/**","/categories/search/{id}","/search/{id}", "/articles/search").permitAll()
             .anyRequest().authenticated()
-        ).formLogin(form -> form.loginPage("/login")
+        ).formLogin(form ->
+            form.loginPage("/login")
             .loginProcessingUrl("/login")
             .defaultSuccessUrl("/")
             .permitAll()
@@ -42,10 +44,10 @@ public class SecurityConfig {
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .permitAll()
         ).exceptionHandling(exception -> exception.accessDeniedPage("/error/403"))
-            .sessionManagement(session -> session
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            .maximumSessions(1)
-            .expiredUrl("/login?session-expired=true")
+        .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+                .expiredUrl("/login?session-expired=true")
             );
         return http.build();
     }
