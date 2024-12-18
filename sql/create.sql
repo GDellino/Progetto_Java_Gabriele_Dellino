@@ -4,7 +4,7 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
- );
+);
 
 CREATE TABLE roles (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -21,7 +21,8 @@ CREATE TABLE articles (
     title VARCHAR(100),
     subtitle VARCHAR(100),
     body TEXT,
-    publish_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    publish_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id BIGINT,
     category_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -29,7 +30,7 @@ CREATE TABLE articles (
 );
 
 CREATE TABLE users_roles (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT auto_increment PRIMARY KEY,
     user_id BIGINT,
     role_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(id),

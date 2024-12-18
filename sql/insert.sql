@@ -1,4 +1,4 @@
-INSERT INTO users (username,email,password,created_at) VALUES ('admin','admin@aulab.it','admin','20240912');
+INSERT INTO users (username,email,password,created_at) VALUES ('admin','admin@aulab.it','$2a$10$oMiUOq5ToRfUI/Zprg5nE.qt8nT9KKJZoDBu1SIWuj.UGx8aRHwxS','20240912');
 
 INSERT INTO roles (name) VALUES ('ROLE_ADMIN'),('ROLE_REVISOR'),('ROLE_WRITER'),('ROLE_USER');
 
