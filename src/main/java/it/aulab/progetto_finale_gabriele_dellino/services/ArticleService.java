@@ -109,14 +109,14 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
                     }
                     imageService.saveImageOnDB(url, updatedArticle);
 
-                    updatedArticle.setIsAccepted(false);
+                    updatedArticle.setIsAccepted(null);
                     return modelMapper.map(articleRepository.save(updatedArticle), ArticleDto.class);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
                 if (!updatedArticle.equals(article)) {
-                    updatedArticle.setIsAccepted(false);
+                    updatedArticle.setIsAccepted(null);
                 } else {
                     updatedArticle.setIsAccepted(article.getIsAccepted());
                 }
